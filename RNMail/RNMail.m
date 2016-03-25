@@ -47,7 +47,9 @@ RCT_EXPORT_METHOD(mail:(NSDictionary *)options
             [mail setToRecipients:recipients];
         }
         
-        if (options[@"attachment"] && options[@"attachment"][@"path"] && options[@"attachment"][@"type"]){
+        // do not force user to enter a mime type
+        //if (options[@"attachment"] && options[@"attachment"][@"path"] && options[@"attachment"][@"type"]){
+        if (options[@"attachment"] && options[@"attachment"][@"path"]){
             NSString *attachmentPath = [RCTConvert NSString:options[@"attachment"][@"path"]];
             NSString *attachmentType = [RCTConvert NSString:options[@"attachment"][@"type"]];
             NSString *attachmentName = [RCTConvert NSString:options[@"attachment"][@"name"]];
@@ -75,7 +77,52 @@ RCT_EXPORT_METHOD(mail:(NSDictionary *)options
                 mimeType = @"text/html";
             } else if ([attachmentType isEqualToString:@"pdf"]) {
                 mimeType = @"application/pdf";
+            } else if ([attachmentType isEqualToString:@"txt"]) {
+                mimeType = @"text/plain";
             }
+            
+            ///////////////////////////////////////
+            // Determine the fileAttachment name and extension
+            //NSString* filename = [attachmentPath lastPathComponent];
+            //NSData *fileData = [NSData dataWithContentsOfFile:fileAttatchmentPath];
+            
+            // Determine the MIME type from file extension
+            // Consider a lookup table of file-extension and mime type pairs.
+            // Would that be easy to maintain in Java and Objective C?
+            NSString* extension = [attachmentPath pathExtension];
+            if ([extension isEqualToString:@"txt"]) {
+                mimeType = @"text/plain";
+            } else if ([extension isEqualToString:@"jpg"]) {
+                mimeType = @"image/jpeg";
+            } else if ([extension isEqualToString:@"png"]) {
+                mimeType = @"image/png";
+            } else if ([extension isEqualToString:@"csv"]) {
+                mimeType = @"text/csv";
+            } else if ([extension isEqualToString:@"doc"]) {
+                mimeType = @"application/msword";
+            } else if ([extension isEqualToString:@"gpx"]) {
+                mimeType = @"application/gpx+xml";
+            } else if ([extension isEqualToString:@"ppt"]) {
+                mimeType = @"application/vnd.ms-powerpoint";
+            } else if ([extension isEqualToString:@"html"]) {
+                mimeType = @"text/html";
+            } else if ([extension isEqualToString:@"kml"]) {
+                mimeType = @"application/vnd.google-earth.kml+xml";
+            } else if ([extension isEqualToString:@"pdf"]) {
+                mimeType = @"application/pdf";
+            } else if ([extension isEqualToString:@"tsr"]) {
+                // TSR OS X sends as this:
+                // Content-Type: application/octet-stream; name="JOB-0001.tsr"
+                mimeType = @"application/vnd.ditchwitch.tsr+xml";
+            } else if ([extension isEqualToString:@"TSL"]) {
+                // MIME types are case insensitive. They are lowercase by convention only.
+                // RFC 2045: http://tools.ietf.org/html/rfc2045
+                mimeType = @"application/vnd.ditchwitch.tsl+xml";
+            } else {
+                NSAssert( NO, @"Unsupported file extension %@", extension);
+                mimeType = @"application/octet-stream";
+            }
+            ///////////////////////////////////////
             
             // Add attachment
             [mail addAttachmentData:fileData mimeType:mimeType fileName:attachmentName];
@@ -87,6 +134,7 @@ RCT_EXPORT_METHOD(mail:(NSDictionary *)options
         callback(@[@"not_available"]);
     }
 }
+
 
 #pragma mark MFMailComposeViewControllerDelegate Methods
 
