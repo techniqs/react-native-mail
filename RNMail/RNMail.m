@@ -57,7 +57,8 @@ RCT_EXPORT_METHOD(mail:(NSDictionary *)options
             
             // Set default filename if not specificed
             if (!attachmentName) {
-                attachmentName = [[attachmentPath lastPathComponent] stringByDeletingPathExtension];
+                //attachmentName = [[attachmentPath lastPathComponent] stringByDeletingPathExtension];
+                attachmentName = [attachmentPath lastPathComponent];
             }
             
             // Get the resource path and read the file using NSData
