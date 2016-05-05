@@ -38,15 +38,22 @@ RCT_EXPORT_METHOD(mail:(NSDictionary *)options
             [mail setSubject:subject];
         }
         
+        bool isHTML = NO;
+        if (options[@"emailBodyIsHTML"]){
+            NSString *emailBodyIsHTML = [RCTConvert NSString:options[@"emailBodyIsHTML"]];
+            isHTML = [emailBodyIsHTML caseInsensitiveCompare:@"true"] == NSOrderedSame;
+        }
+        
         if (options[@"body"]){
             NSString *body = [RCTConvert NSString:options[@"body"]];
-            [mail setMessageBody:body isHTML:NO];
+            [mail setMessageBody:body isHTML:isHTML];
         }
         
         if (options[@"recipients"]){
             NSArray *recipients = [RCTConvert NSArray:options[@"recipients"]];
             [mail setToRecipients:recipients];
         }
+        
         
         // do not force user to enter a mime type
         //if (options[@"attachment"] && options[@"attachment"][@"path"] && options[@"attachment"][@"type"]){
@@ -57,7 +64,8 @@ RCT_EXPORT_METHOD(mail:(NSDictionary *)options
             // Set default attachment name to filename and extension if not specificed
             NSString *attachmentName = [RCTConvert NSString:options[@"attachment"][@"name"]];
             if (!attachmentName) {
-                attachmentName = [[attachmentPath lastPathComponent] stringByDeletingPathExtension];
+                //attachmentName = [[attachmentPath lastPathComponent] stringByDeletingPathExtension];
+                attachmentName = [attachmentPath lastPathComponent];
             }
             
             // Get the resource path and read the file using NSData
@@ -70,6 +78,24 @@ RCT_EXPORT_METHOD(mail:(NSDictionary *)options
             
             // Add attachment
             [mail addAttachmentData:fileData mimeType:mimeType fileName:attachmentName];
+        }
+        
+        if (options[@"attachmentList"]){
+            NSArray<NSDictionary *> *attachmentList = [RCTConvert NSDictionaryArray:options[@"attachmentList"]];
+            for(int i = 0; i < [attachmentList count]; ++i) {
+                NSDictionary * attachmentItem = attachmentList[i];
+                NSString *attachmentName = [RCTConvert NSString:attachmentItem[@"fileName"]];
+                NSString *attachmentPath = [RCTConvert NSString:attachmentItem[@"fileNamePath"]];
+                NSString *mimeType = [RCTConvert NSString:attachmentItem[@"fileMimeType"]];
+                if (!mimeType) {
+                    mimeType = lookupMimeByFileExtension(attachmentPath);
+                }
+                
+                // Read file data to add to mime attachment
+                NSData *fileData = [NSData dataWithContentsOfFile:attachmentPath];
+                [mail addAttachmentData:fileData mimeType:mimeType fileName:attachmentName];
+            }
+            
         }
         
         UIViewController *root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
