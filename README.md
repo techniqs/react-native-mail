@@ -112,3 +112,32 @@ On android callback will only have error(if any) as the argument. event is not a
 
 ## Here is how it looks:
 ![Demo gif](https://github.com/chirag04/react-native-mail/blob/master/screenshot.jpg)
+
+# API Modifications
+
+* Added auto-detect mime type from common file extensions.
+* Added support for multiple attachments:
+```
+          let attachmentList = [];
+          for(let i = 0; i < this.state.fileAttachmentList.length; ++i) {
+            attachmentList.push({
+              fileNamePath: this.state.fileAttachmentList[i].fileNamePath,
+              fileName: this.state.fileAttachmentList[i].fileName,
+              fileMimeType: this.state.fileAttachmentList[i].fileMimeType,
+            });
+          }
+```
+* Added emailBodyIsHTML
+```
+          Mailer.mail({
+            subject: subjectText,
+            recipients: ['edward.sutton@subsite.com'],
+            body: bodyText,
+            emailBodyIsHTML: 'true',
+            attachmentList: attachmentList,
+          }, (error, event) => {
+            if(error) {
+              Alert.alert('Error', 'Could not send mail');
+            }
+          });
+```
