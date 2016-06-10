@@ -117,23 +117,24 @@ On android callback will only have error(if any) as the argument. event is not a
 
 * Added auto-detect mime type from common file extensions.
 * Added support for multiple attachments:
+  * Should not need to use name or mimeType
 ```
           let attachmentList = [];
           for(let i = 0; i < this.state.fileAttachmentList.length; ++i) {
             attachmentList.push({
-              fileNamePath: this.state.fileAttachmentList[i].fileNamePath,
-              fileName: this.state.fileAttachmentList[i].fileName,
-              fileMimeType: this.state.fileAttachmentList[i].fileMimeType,
+              path: this.state.fileAttachmentList[i].fileNamePath,
+              name: this.state.fileAttachmentList[i].fileName,
+              mimeType: this.state.fileAttachmentList[i].fileMimeType,
             });
           }
 ```
-* Added emailBodyIsHTML
+* Added isHtml - Android HTML is awful ( no <table>, <ol>, etc. )
 ```
           Mailer.mail({
-            subject: subjectText,
-            recipients: ['edward.sutton@subsite.com'],
-            body: bodyText,
-            emailBodyIsHTML: 'true',
+            subject: 'A great investment opportunity",
+            recipients: ['john@acme.com', 'bob@acme.com'],
+            body: '<h1>Greetings</h1>Hello John and Bob<br>Send money?<br><b>Goodbye</b>',
+            isHtml: true,
             attachmentList: attachmentList,
           }, (error, event) => {
             if(error) {
@@ -141,3 +142,8 @@ On android callback will only have error(if any) as the argument. event is not a
             }
           });
 ```
+On Android HTML email body results are awful, no table, ol, etc.
+
+Is there really no way to make it work like iOS?
+* http://blog.iangclifton.com/2010/05/17/sending-html-email-with-android-intent/
+* http://www.nowherenearithaca.com/2011/10/some-notes-for-sending-html-email-in.html
