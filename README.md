@@ -161,7 +161,8 @@ Example: Create attachmentList
             }
           });
 ```
-On Android HTML email body results are awful, no table, ol, etc.
+
+On Android, HTML email body results are awful as only *very* basic tags are supported.
 
 Is there really no way to make it work like iOS?
 * http://blog.iangclifton.com/2010/05/17/sending-html-email-with-android-intent/
