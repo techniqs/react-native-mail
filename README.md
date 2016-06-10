@@ -116,9 +116,14 @@ On android callback will only have error(if any) as the argument. event is not a
 # API Modifications
 
 * Added Android HTML support
+* Added support for multiple attachments on iOS and Android.
 * Added auto-detect mime type from common file extensions.
-* Added support for multiple attachments:
-  * Should not need to use name or mimeType
+
+| Feature                  | iOS    | Android                                                                   |
+| ------------------------ |--------| ------------------------------------------------------------------------- |
+| HTML                     | Yes    | Yes - HTML support is **very** primitive.  No table support.              |
+| Multiple file attachments| Yes    | Yes                                                                       | 
+
   
 | mail          | Type                                    | Comment                                   |
 | ------------- | --------------------------------------- | ----------------------------------------- |
