@@ -147,7 +147,7 @@ Example: Create attachmentList
             });
           }
 ```
-* Added isHtml - Android HTML is awful ( no <table>, <ol>, etc. )
+* Added isHtml - Android HTML is awful ( no table, ol, etc. )
 ```
           Mailer.mail({
             subject: 'A great investment opportunity",
