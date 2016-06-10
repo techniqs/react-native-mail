@@ -115,9 +115,28 @@ On android callback will only have error(if any) as the argument. event is not a
 
 # API Modifications
 
+* Added Android HTML support
 * Added auto-detect mime type from common file extensions.
 * Added support for multiple attachments:
   * Should not need to use name or mimeType
+  
+| mail          | Type                                    | Comment                                   |
+| ------------- | --------------------------------------- | ----------------------------------------- |
+| subject       | string        		          |                                           |
+| recipients    | array of email address strings          |                                           |
+| body          | string                                  | HTML is supported. Android is very basic. |  
+| isHtml        | bool                                    | Set true if your body text contains HTML. |  
+| attachmentList| array of one or more attachment objects |                                           |  
+  
+
+| attachmentList| Type   | Comment                                                                   |
+| ------------- |--------| ------------------------------------------------------------------------- |
+| path          | string | Absolute path to file                                                     |
+| name          | string | Name to display as file atatchment. Not needed, name is derived from path | 
+| mimeType      | string | Mime type. Not needed, mime is derived from file extension                |  
+
+  
+Example: Create attachmentList 
 ```
           let attachmentList = [];
           for(let i = 0; i < this.state.fileAttachmentList.length; ++i) {
